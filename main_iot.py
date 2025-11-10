@@ -17,19 +17,19 @@
 from datetime import datetime
 from multiprocessing import Process
 
-from conf.config import BASE_DIR
+from conf.config import BASE_DIR, config_params
 from src.data_ingestion.kafka_consumer import consumer_iot
 from src.data_ingestion.kafka_producer import produce_iot
-from src.utils.logger import config_params, echo_config, logger
+from src.utils.logger import echo_config, logger
 
 
 def main():
     
     """_summary_"""
     
-    run_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+    run_time = datetime.now().strftime("%Y-%m-%d")
     params = config_params()
-    log_file = BASE_DIR / "logs" / f"{params["LOGGING_FILE"]}_{run_time}.log"
+    log_file = BASE_DIR / "logs" / f"{params["LOGGING_FILE"]}_IoT_{run_time}.log"
     logger_ = logger(log_file, params["CONSOLE_DEBUG_LEVEL"], params["FILE_DEBUG_LEVEL"])
     
     logger_.info(f"Starding run, logfile => {log_file}")

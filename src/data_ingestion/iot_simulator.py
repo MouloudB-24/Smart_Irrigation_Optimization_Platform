@@ -42,18 +42,8 @@ def generate_value(sensor: dict, method: str="normal") -> float:
     
 
 def simulate_iot(site_name: str, device: dict, sensor: dict, current_time: datetime, logger) -> dict:
-    """function fot generating random IoT data
-
-    Args:
-        sensor (dict): sensor information
-        device (dict): device information
-        site_name (str): site name
-        current_time (datetime): current time
-        logger (function): logging
-
-    Returns:
-        dict: randomly generated data
-    """
+    
+    """function fot generating random IoT data"""
     
     
     # Generate the timestamp
@@ -62,7 +52,7 @@ def simulate_iot(site_name: str, device: dict, sensor: dict, current_time: datet
     # Generate the sonsor measure
     measure = generate_value(sensor)
     
-    event = {
+    message = {
         "timestamp": timestamp,
         "metadata": {
             "siteId": site_name,
@@ -73,6 +63,6 @@ def simulate_iot(site_name: str, device: dict, sensor: dict, current_time: datet
         "measure": measure
     }
     
-    logger.debug(f"iot_simulator.simulate_iot - Device Type {device["deviceType"]}: {event}")
+    logger.debug(f"iot_simulator.simulate_iot - Device Type {device["deviceType"]}: {message}")
     
-    return event
+    return message

@@ -109,25 +109,4 @@ def echo_config(params, logger):
     
     logger.info("*"*70)     
     logger.info("")
-
-
-def config_params():
-    
-    """Retreive Common Config Pamameters in a dictionary format"""
-    
-    return {
-        # General parameters
-        "CONSOLE_DEBUG_LEVEL": int(os.environ["CONSOLE_DEBUG_LEVEL"]),
-        "FILE_DEBUG_LEVEL": int(os.environ["FILE_DEBUG_LEVEL"]),
-        
-        "LOGGING_FILE": os.environ["LOGGING_FILE"],
-        "INPUT_DATA_FILE": os.environ["INPUT_DATA_FILE"],
-        "SITE_IDS": os.environ["SITE_IDS"],
-        
-        # Mongo parameters
-        "MONGO_USERNAME": os.environ["MONGO_USERNAME"],
-        "MONGO_PASSWORD": os.environ["MONGO_PASSWORD"],
-        "MONGO_DATABASE": os.environ["MONGO_DATABASE"],
-        "MONGO_COLLECTION": os.environ["MONGO_COLLECTION"]
-    }
    

@@ -1,7 +1,21 @@
+#####################################################################
+#
+# Project       : Smart Irrigation Optimisation Platform
+#
+# File          : kafka_producer.py
+#
+# Description   : Implementation of the iot data consumer kafka
+# 
+# Created       : 7 November 2025
+#
+# Author        : Mouloud BELLIL
+#
+# Email         : mouloud.bellil@outlook.fr
+#
+#######################################################################
 
 import os
 
-from conf.config import IoT_topic, NB_SONSORS
 from src.utils.db_utils import create_mongo_connection
 from src.utils.kafka_utils import consumer_message
 
@@ -16,4 +30,4 @@ def consumer_iot(params, logger):
         os._exit(1)
     
     # Loading data into Mongodb
-    consumer_message(IoT_topic, mongodb_collection, NB_SONSORS, logger)
+    consumer_message(params["IoT_TOPIC"], mongodb_collection, params["NB_SENSORS"], logger)

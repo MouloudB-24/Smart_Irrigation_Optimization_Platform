@@ -17,8 +17,9 @@
 from datetime import datetime
 import os
 
-from conf.config import BASE_DIR, IoT_topic
+from conf.config import BASE_DIR
 from src.data_ingestion.iot_simulator import simulate_iot
+from src.data_ingestion.weather_api import query_weather_api
 from src.utils.json_utils import pp_json, read_input_data
 from src.utils.kafka_utils import produce_message
 
@@ -52,9 +53,25 @@ def produce_iot(params, logger):
             message = simulate_iot(site["name"], device, sensor, current_time, logger)            
     
             # send event to topic
-            produce_message(IoT_topic, message, logger)
+            produce_message(params["IoT_TOPIC"], message, logger)
                 
-    logger.info(f"producer_iot.main - Site ID {site["siteId"]}: IoT data generation is complete")
+    logger.info(f"src.kafka_producer.produce_iot - IoT data is send to topic: {params["IoT_TOPIC"]}")
+    
+    
+
+def produce_weather(params, logger):
+    
+    """summary"""
+    
+    # query api
+    message = query_weather_api(params["BASE_URL"], params["API_PARAMS"], logger)
+    
+    produce_message(params["WEATHER_TOPIC"], message, logger)
+    
+    logger.info(f"src.kafka_producer.produce_weather - waether data is sent to topic: {params["WEATHER_TOPIC"]}")
+
+    
+    
     
     
     
