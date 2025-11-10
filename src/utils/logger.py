@@ -22,7 +22,7 @@ def logger(filepath: Path, console_debug_level: int, file_debug_level: int):
     
     """function allowing to configure the logger"""
         
-    logger = logging.getLogger(f"log_{filepath}")
+    logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     
     # Remove old handlers

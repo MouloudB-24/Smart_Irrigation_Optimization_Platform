@@ -1,11 +1,12 @@
 
 import os
-from config.config import IoT_topic, NB_SONSORS
-from src.utils.db_connection import create_mongo_connection
-from kafka_utils.kafka_consumer import consumer_message
+
+from conf.config import IoT_topic, NB_SONSORS
+from src.utils.db_utils import create_mongo_connection
+from src.utils.kafka_utils import consumer_message
 
 
-def main(params, logger):
+def consumer_iot(params, logger):
     
     # MongoDB persistence
     mongodb_collection = create_mongo_connection(params, logger)

@@ -11,6 +11,7 @@ API_KEY = os.environ["API_KEY"]
 # Kafka
 IoT_topic = "IoT_topic"
 weather_topic = "weather_topic"
+NB_SONSORS = 12
 
 # Weather API
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
