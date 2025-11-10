@@ -1,0 +1,10 @@
+dnspython==2.8.0
+dotenv==0.9.9
+kafka-python==2.2.15
+pymongo==4.15.3
+python-dotenv==1.2.1
+dnspython==2.8.0
+dotenv==0.9.9
+kafka-python==2.2.15
+pymongo==4.15.3
+python-dotenv==1.2.1
