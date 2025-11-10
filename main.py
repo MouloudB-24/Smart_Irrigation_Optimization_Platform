@@ -1,6 +1,6 @@
 #####################################################################
 #
-# Project       : IoT based TimesSeries Data via Python Application
+# Project       : Smart Irrigation Optimiation Platform
 #
 # File          : main.py
 #
@@ -17,6 +17,7 @@
 from datetime import datetime
 from multiprocessing import Process
 
+from conf.config import BASE_DIR
 from src.data_ingestion.kafka_producer import produce_iot
 from src.utils.logger import config_params, echo_config, logger
 
@@ -27,14 +28,11 @@ def main():
     
     run_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
     params = config_params()
-    params["LOGGING_FILE"] = params["LOGGING_FILE"] + "_" + str(params["SITE_IDS"])+ "_" + run_time
+    log_file = BASE_DIR / "logs" / f"{params["LOGGING_FILE"]}_{run_time}.log"
+    logger_ = logger(log_file, params["CONSOLE_DEBUG_LEVEL"], params["FILE_DEBUG_LEVEL"])
     
-    logger_ = logger(params["LOGGING_FILE"] + ".log", params["CONSOLE_DEBUG_LEVEL"], params["FILE_DEBUG_LEVEL"])
-    logger_.info(f"Starding run, logfile => {params["LOGGING_FILE"]}")
-    
+    logger_.info(f"Starding run, logfile => {log_file}")
     echo_config(params, logger_)
-    
-    
     
     try:
         p1 = Process(target=produce_iot, args=(params, logger_))
