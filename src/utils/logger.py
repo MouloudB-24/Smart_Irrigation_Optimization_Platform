@@ -13,18 +13,25 @@
 # Email         : mouloud.bellil@outlook.fr
 #
 #######################################################################
-
-import logging
 import os
-from conf import config
+import logging
+from pathlib import Path
 
 
-def logger(filepath: str, console_debug_level: int, file_debug_level: int):
+def logger(filepath: Path, console_debug_level: int, file_debug_level: int):
     
     """function allowing to configure the logger"""
         
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger(f"log_{filepath}")
     logger.setLevel(logging.DEBUG)
+    
+    # Remove old handlers
+    if logger.hasHandlers():
+        logger.handlers.clear()
+    
+    # Ensure parent folder exists
+    filepath = Path((filepath))
+    filepath.parent.mkdir(parents=True, exist_ok=True)
     
     # Create a formatter
     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
@@ -55,7 +62,7 @@ def logger(filepath: str, console_debug_level: int, file_debug_level: int):
     logger.addHandler(ch)
     
     # Create log file
-    fh = logging.FileHandler(filepath)
+    fh = logging.FileHandler(str(filepath))
     
     # Set file log level
     if file_debug_level == 0:
@@ -97,7 +104,7 @@ def echo_config(params, logger):
     logger.info("* Input data file          : "+ params["INPUT_DATA_FILE"])
     logger.info("* SiteId's                 : "+ str(params["SITE_IDS"]))
     
-    logger.info("* Mongo Database          : " + params["MONGO_DATABASE"])
+    logger.info("* Mongo Database           : " + params["MONGO_DATABASE"])
     logger.info("* Mongo Collection         : " + params["MONGO_COLLECTION"])
     
     logger.info("*"*70)     
@@ -110,12 +117,12 @@ def config_params():
     
     return {
         # General parameters
-        "CONSOLE_DEBUG_LEVEL": config.CONSOLE_DEBUG_LEVEL,
-        "FILE_DEBUG_LEVEL": config.FILE_DEBUG_LEVEL,
+        "CONSOLE_DEBUG_LEVEL": int(os.environ["CONSOLE_DEBUG_LEVEL"]),
+        "FILE_DEBUG_LEVEL": int(os.environ["FILE_DEBUG_LEVEL"]),
         
-        "LOGGING_FILE": config.LOGGING_FILE,
-        "INPUT_DATA_FILE": config.INPUT_DATA_FILE,
-        "SITE_IDS": config.SITE_IDS,
+        "LOGGING_FILE": os.environ["LOGGING_FILE"],
+        "INPUT_DATA_FILE": os.environ["INPUT_DATA_FILE"],
+        "SITE_IDS": os.environ["SITE_IDS"],
         
         # Mongo parameters
         "MONGO_USERNAME": os.environ["MONGO_USERNAME"],
