@@ -16,9 +16,8 @@
 
 from datetime import datetime
 import os
-import time
 
-from conf.config import IoT_topic
+from conf.config import BASE_DIR, IoT_topic
 from src.data_ingestion.iot_simulator import simulate_iot
 from src.utils.json_utils import pp_json, read_input_data
 from src.utils.kafka_utils import produce_message
@@ -29,7 +28,7 @@ def produce_iot(params, logger):
     """_summary_"""
     
     # Load data site
-    sites = read_input_data(params["INPUT_DATA_FILE"], logger)
+    sites = read_input_data(BASE_DIR / "conf" / params["INPUT_DATA_FILE"], logger)
     
     # quit: problem in the input data file
     if sites == -1:
@@ -44,25 +43,18 @@ def produce_iot(params, logger):
     # Start ESP: Kafka   
     logger.info(f"producer_iot.main - Site ID {site["siteId"]}: Starding ESP Kafka")
         
-    while True:
-        current_time = datetime.now()
+    current_time = datetime.now()
 
-        for device in site["devices"]:
+    for device in site["devices"]:
 
-            for sensor in device["sensors"]:
-                # new event
-                message = simulate_iot(site["name"], device, sensor, current_time, logger)            
-        
-                # send event to topic
-                produce_message(IoT_topic, message, logger)
+        for sensor in device["sensors"]:
+            # new event
+            message = simulate_iot(site["name"], device, sensor, current_time, logger)            
+    
+            # send event to topic
+            produce_message(IoT_topic, message, logger)
                 
-        logger.info(f"producer_iot.main - Site ID {site["siteId"]}: IoT data generation is in progress...")
-        logger.info("To stop press Ctrl+C")
-        logger.info("-----")
-        
-        # Define collection frequecy
-        time.sleep(site["sleeptime"] / 1000)
-        
-    # logger.info(f"Completed run, logfile => {params["LOGGING_FILE"]}")      
+    logger.info(f"producer_iot.main - Site ID {site["siteId"]}: IoT data generation is complete")
+    
     
     
