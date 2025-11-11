@@ -18,6 +18,7 @@ from datetime import datetime
 import os
 from dotenv import load_dotenv
 
+from src.data_ingestion.kafka_consumer import consumer_weather
 from src.data_ingestion.kafka_producer import produce_weather
 from src.utils.logger import echo_config, logger
 from conf.config import BASE_DIR, config_params
@@ -39,6 +40,8 @@ def main():
     echo_config(params, logger_)
     
     produce_weather(params, logger_)
+    
+    consumer_weather(params, logger_)
 
 
 if __name__ == "__main__":

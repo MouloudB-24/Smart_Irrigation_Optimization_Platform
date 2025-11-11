@@ -24,7 +24,7 @@ def config_params():
         "INPUT_DATA_FILE": os.environ.get("INPUT_DATA_FILE", ""),
         "IoT_TOPIC": os.environ.get("IoT_TOPIC", "IoT_TOPIC"),
         "SITE_IDS": os.environ.get("SITE_IDS", 1),
-        "NB_SENSORS": int(os.environ.get("NB_SENSORS", 12)),
+        "MAX_DOCS": int(os.environ.get("MAX_DOCS", 12)),
         
         # Api weather parameters
         "API_PARAMS": API_PARAMS,

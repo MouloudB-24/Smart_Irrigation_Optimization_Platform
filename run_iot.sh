@@ -1,12 +1,12 @@
 #!/usr/bin/bash
 
-source .gps
+source /home/mouloud/Documents/projects/Smart_Irrigation_Optimization_Platform/.gps
 
 export INPUT_DATA_FILE="beauce.json"
 
 # Data site
 export SITE_IDS=1
-export NB_SENSORS=12
+export MAX_DOCS=12
 
 # IoT topic
 export IoT_TOPIC="IoT_TOPIC"
