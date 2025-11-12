@@ -1,5 +1,5 @@
-from datetime import datetime
 import os
+import ee
 from typing import List, Tuple
 import requests
 import numpy as np
@@ -41,16 +41,16 @@ def get_st_temperature(lat: float, lon: float, date: int, logger: Logger, timeou
         return response.json()
     
     except requests.exceptions.Timeout:
-        logger.debug("satellite_api.get_st_temperature - Timeout: the server took too long to respond")
+        logger.debug("get_st_temperature - Timeout: the server took too long to respond")
     
     except requests.exceptions.ConnectionError:
-        logger.debug("satellite_api.get_st_temperature - Connexion impossible: server inaccessible")
+        logger.debug("get_st_temperature - Connexion impossible: server inaccessible")
         
     except requests.exceptions.HTTPError as e:
-        logger.debug(f"satellite_api.get_st_temperature - HTTP error: {e}")
+        logger.debug(f"get_st_temperature - HTTP error: {e}")
     
     except requests.exceptions.RequestException as e:
-        logger.debug(f"satellite_api.get_st_temperature - Unexpected error: {e}")
+        logger.debug(f"get_st_temperature - Unexpected error: {e}")
 
 
 def get_st_ndvi(bbox_coords: List, time_interval: Tuple, logger: Logger, resolution: int=10, show_image: bool=False) -> dict:
@@ -102,8 +102,7 @@ def get_st_ndvi(bbox_coords: List, time_interval: Tuple, logger: Logger, resolut
         responses=[SentinelHubRequest.output_response("default", MimeType.TIFF)],
         bbox=aoi_bbox,
         size=aoi_size,
-        config=config,
-    )
+        config=config)
 
     # retreive data
     ndvi_data = request_ndvi.get_data()[0]
@@ -136,9 +135,52 @@ def get_st_ndvi(bbox_coords: List, time_interval: Tuple, logger: Logger, resolut
     return ndvi_dict
 
 
+def get_st_evapotranspiration(bbox_coords: List, start_date: str, end_date: str, logger: Logger="", scale=500):
+    
+    """summary"""
+    
+    try:
+        try:
+            ee.Initialize(project='eighth-opus-478010-i8')
+            logger.info("get_st_evapotranspiration - Earth Engine successfuly initialized")
+        except ee.EEException as e:
+            logger.error(f"get_st_evapotranspiration - Earth Engine initialisation error: {e}")
+            return -1
+        
+        # create region
+        region = ee.Geometry.Rectangle(bbox_coords)
+        
+        # Load MOD16A2 collection
+        collection = ee.ImageCollection("MODIS/061/MOD16A2").filterDate(start_date, end_date).select("ET")
+        
+        # et mean
+        et_image = collection.mean().clip(region)
+        
+        # stat
+        et_mean = et_image.reduceRegion(
+            reducer=ee.Reducer.mean(),
+            geometry=region,
+            scale=scale,
+            maxPixels=1e9).getInfo()
+        
+        return  et_mean
+    
+    except Exception as e:
+        logger.error(f"get_st_evapotranspiration - unexpected error: {e}")
+        return -1
+
+
 if __name__ == "__main__":
-    ndvi = get_st_ndvi(
-        bbox_coords=[-1.28, 48.30, -1.12, 48.40], # bbox Fougères
-        time_interval=("2025-06-01", "2025-06-10")
-    )
-    print(ndvi)
+    # ndvi = get_st_ndvi(
+    #     bbox_coords=[-1.28, 48.30, -1.12, 48.40], # bbox Fougères
+    #     time_interval=("2025-06-01", "2025-06-10")
+    # )
+    # print(ndvi)
+    
+    bbox_coords=[-1.28, 48.30, -1.12, 48.40]
+    start = "2025-06-01"
+    end   = "2025-06-09"
+
+    # Initialiser
+    result = get_st_evapotranspiration(bbox_coords, start, end, scale=500)
+    print(result)
