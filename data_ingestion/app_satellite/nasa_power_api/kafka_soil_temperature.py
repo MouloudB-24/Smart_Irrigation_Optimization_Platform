@@ -26,13 +26,13 @@ from utils.kafka_utils import consumer_message, produce_message
 def produce_st_soil_temp(params: dict, logger: Logger):
     
     """summary"""
-    
-    logger.debug("produce_st_soil_temp - kafka process: Soil Temperature")
-    
+        
     # temperature data
     message = get_soil_temperature(params["LATITUDE"], params["LONGITUDE"], logger)
     if message == -1:
         os._exit(1)
+        
+    logger.debug("produce_st_soil_temp - Soil Temperature kafka process:")
     
     # send message to the topic
     produce_message(params["ST_TEMP_TOPIC"], message, logger)

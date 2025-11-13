@@ -92,7 +92,7 @@ def logger(filepath: Path, console_debug_level: int, file_debug_level: int):
 def echo_config(params, logger):
     logger.info("*"*70)
     logger.info("* ")
-    logger.info("*          IoT Stream Data Pipeline    ")
+    logger.info("*          Smart Irrigation Optimization Platform    ")
     logger.info("* ")
     logger.info("*"*70)
     logger.info("* General")

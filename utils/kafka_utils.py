@@ -1,59 +1,67 @@
 
 import json
+from logging import Logger
 import os
+from typing import List
 from kafka import KafkaProducer
 from kafka import KafkaConsumer
+from kafka.errors import NoBrokersAvailable
 
-from utils.db_utils import create_mongo_connection, insert_to_mongodb
-
+from utils.db_utils import insert_to_mongodb
+from utils.json_utils import pp_json
 
 def create_kafka_producer():
+    """configure kfka Producer"""
+    
     return KafkaProducer(
         bootstrap_servers="localhost:9092",
         key_serializer=lambda k: str(k).encode("utf-8"),
-        value_serializer=lambda v: v.encode("utf-8")
-    )
+        value_serializer=lambda v: v.encode("utf-8"))
     
     
-def produce_message(topic, json_thing, logger):
-    
+def produce_message(topic: str, message_json, logger: Logger):
     """function to send a message to the topic kafka"""
     
-    producer = create_kafka_producer()
     
     try:
-        if type(json_thing) is not str:
-            message = json.dumps(json_thing)
-        else:
-            message = json_thing
+        producer = create_kafka_producer()
         
-        producer.send(topic, message)
+        if type(message_json) is not str:
+            message_str = json.dumps(message_json)
+        else:
+            message_str = message_json
+        
+        producer.send(topic, message_str)
         producer.flush()
         
+        logger.info(f"produce_message - message was send to the topic: {topic}")
+    
+    except NoBrokersAvailable as e:
+        logger.critical(f"produce_message - error connecting to kafka: {e}")
+        os._exit(1)
+        
     except Exception as e:
-        logger.error(f"Error in the src.utils.kafka_utils.produce_message: {e}")
+        logger.error(f"produce_message - unexpected error : {e}")
+        os._exit()
 
 
-def create_kafka_consumer(topic):
+def create_kafka_consumer(topic: str):
     return KafkaConsumer(
         topic,
         bootstrap_servers="localhost:9092",
         auto_offset_reset="earliest",
         group_id="iot_consumer_group",
-        enable_auto_commit=False,
+        enable_auto_commit=False)
         # consumer_timeout_ms=2000
-    )
-    
 
-def consumer_message(topic, my_collection, max_docs, logger):
-    
+ 
+def consumer_message(topic: str, my_collection: str, max_docs: List, logger: Logger):
     """function to consume a message from topic kafka and saved it in the mongodb"""
-    
-    consumer = create_kafka_consumer(topic)
-     
+         
     my_docs = []
     
     try:
+        consumer = create_kafka_consumer(topic)
         
         for msg in consumer:
             
@@ -65,46 +73,25 @@ def consumer_message(topic, my_collection, max_docs, logger):
             
             # break
             if len(my_docs) >= max_docs:
+                logger.info(f"consumer_message - message was consumed from topic: {topic}")
+                
+                logger.debug("consumer_message - messages:")
+                pp_json(my_docs, logger)
+                
                 insert_to_mongodb(my_collection, my_docs, logger)
                 consumer.commit()
                 
-                logger.info(f"src.utils.kafka_utils.consumer_message - messages saved in Mongodb")
+                logger.info("consumer_message - messages saved in Mongodb")
                 
                 # reset
                 my_docs = []
                 
-    except Exception as e:
-        logger.error(f"Error in the src.utils.kafka_utils.consumer_message: {e}")
-        
-    finally:
         consumer.close()
-        
-        
-def consumer_iot(params, logger):
     
-    """summary"""
-    
-    # MongoDB persistence
-    mongodb_collection = create_mongo_connection(params, logger)
-
-    if mongodb_collection == -1:
-        logger.critical(f"simulate.generate_iot_events - EXITING")
+    except NoBrokersAvailable as e:
+        logger.critical(f"consumer_message - error connecting to kafka: {e}")
         os._exit(1)
-    
-    # Loading data into Mongodb
-    consumer_message(params["IoT_TOPIC"], mongodb_collection, params["MAX_DOCS"], logger)
-    
-
-def consumer_weather(params, logger):
-    
-    """summary"""
-    
-    # MongoDB persistence
-    mongodb_collection = create_mongo_connection(params, logger)
-
-    if mongodb_collection == -1:
-        logger.critical(f"simulate.generate_iot_events - EXITING")
-        os._exit(1)
-    
-    # Loading data into Mongodb
-    consumer_message(params["WEATHER_TOPIC"], mongodb_collection, params["MAX_DOCS"], logger)
+                    
+    except Exception as e:
+        logger.error(f"consumer_message - unexpected error: {e}")
+        os._exit(1)        

@@ -1,21 +1,27 @@
 #!/usr/bin/bash
 
-source /home/mouloud/Documents/projects/Smart_Irrigation_Optimization_Platform/.gps
+# Project folder
+PROJECT_FOLDER="/home/mouloud/Documents/projects/Smart_Irrigation_Optimization_Platform"
+cd $PROJECT_FOLDER
 
-export INPUT_DATA_FILE="beauce.json"
+# Read global parameters
+source .gps
+
+# Input data
+export INPUT_DATA_FILE="site.json"
 
 # Data site
 export SITE_IDS=1
 export MAX_DOCS=12
 
 # IoT topic
-export IoT_TOPIC="IoT_TOPIC"
+export IoT_TOPIC="iot_topic"
 
 # Mongodb
 export MONGO_COLLECTION="sensor_data"
 
 # venv
-source /home/mouloud/Documents/projects/Smart_Irrigation_Optimization_Platform/venv/bin/activate
+source venv/bin/activate
 
 # run
-python3 /home/mouloud/Documents/projects/Smart_Irrigation_Optimization_Platform/main_iot.py
+python3 -m data_ingestion.app_iot.main_iot

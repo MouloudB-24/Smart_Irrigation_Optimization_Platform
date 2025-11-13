@@ -27,7 +27,7 @@ def get_soil_temperature(lat: float, lon: float, logger: Logger, timeout: Tuple=
         
         soil_temp_data = response.json()
         logger.info("get_soil_temperature - Power NASA API - soil temperature data were obtained")
-            
+
         return soil_temp_data
     
     except requests.exceptions.Timeout:

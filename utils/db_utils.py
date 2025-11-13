@@ -32,25 +32,25 @@ def create_mongo_connection(params, logger):
         else:
             MONGO_URI = "mongodb://localhost:27017/?directConnection=true"
     
-        logger.debug(f"connection_db.create_mongo_connection - URI: {MONGO_URI}")
+        logger.debug(f"create_mongo_connection - URI: {MONGO_URI}")
 
         try:
             connection = pymongo.MongoClient(MONGO_URI)
             connection.admin.command("ping")
             
-        except pymongo.errors.ServerSelectionTimeoutError as err:
-            logger.critical(f"connection_db.create_mongo_connection - FAILED error: {err}")
+        except pymongo.errors.ServerSelectionTimeoutError:
+            logger.critical(f"create_mongo_connection - mongo server took too long to respond!")
             return -1
         
         my_database = connection[params["MONGO_DATABASE"]]
         my_collection = my_database[params["MONGO_COLLECTION"]]
         
-        logger.info(f"connection_db.create_mongo_connection - CONNECTED")
+        logger.info(f"create_mongo_connection - CONNECTED")
         
         return my_collection
     
     except Exception as e:
-        logger.critical(f"connection_db.create_mongo_connection - FAILED error: {e}")
+        logger.critical(f"create_mongo_connection - FAILED error: {e}")
         return -1 
         
 

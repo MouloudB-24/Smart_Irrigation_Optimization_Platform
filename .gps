@@ -16,3 +16,6 @@ export FILE_DEBUG_LEVEL=0
 
 # Inpute
 export LOGGING_FILE="logger"
+
+# Projet folder
+export PROJECT_FOLDER="/home/mouloud/Documents/projects/Smart_Irrigation_Optimization_Platform"
