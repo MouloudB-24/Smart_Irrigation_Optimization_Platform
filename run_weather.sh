@@ -1,18 +1,27 @@
 #!/usr/bin/bash
 
-source /home/mouloud/Documents/projects/Smart_Irrigation_Optimization_Platform/.gps
+# Project folder
+PROJECT_FOLDER="/home/mouloud/Documents/projects/Smart_Irrigation_Optimization_Platform"
+cd $PROJECT_FOLDER
+
+# Read global parameters
+source .gps
+
 
 # Mongodb
 export MONGO_COLLECTION="weather_data"
 
 # API
-export BASE_URL="https://api.openweathermap.org/data/2.5/weather"
+export WEATHER_URL="https://api.openweathermap.org/data/2.5/weather"
 
 # Topic
 export WEATHER_TOPIC="Weather_topic"
 
+# Docs
+export MAX_DOCS=1
+
 # Venv
-source /home/mouloud/Documents/projects/Smart_Irrigation_Optimization_Platform/venv/bin/activate
+source venv/bin/activate
 
 # run
-python3 /home/mouloud/Documents/projects/Smart_Irrigation_Optimization_Platform/main_weather.py
+python3 -m data_ingestion.app_weather.main_weather
