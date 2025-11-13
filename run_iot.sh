@@ -12,7 +12,7 @@ export INPUT_DATA_FILE="site.json"
 
 # Data site
 export SITE_IDS=1
-export MAX_DOCS=12
+export MAX_DOCS=5
 
 # IoT topic
 export IoT_TOPIC="iot_topic"

@@ -36,11 +36,8 @@ def produce_iot(params, logger):
     if sites == -1:
         os._exit(1)
         
-    # Date source: CNPE Nogent-sur_seine => 4 devices = > 12 sensors
+    # Date source
     site = sites[0]
-    
-    logger.debug(f"producer_iot.main - Site ID {site["siteId"]}: Printing Complete site record")
-    pp_json(site, logger)
     
     # Start ESP: Kafka   
     logger.info(f"producer_iot.main - Site ID {site["siteId"]}: Starding ESP Kafka")

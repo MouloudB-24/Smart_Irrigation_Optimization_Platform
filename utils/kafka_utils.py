@@ -51,8 +51,8 @@ def create_kafka_consumer(topic: str):
         bootstrap_servers="localhost:9092",
         auto_offset_reset="earliest",
         group_id="iot_consumer_group",
-        enable_auto_commit=False)
-        # consumer_timeout_ms=2000
+        enable_auto_commit=False,
+        consumer_timeout_ms=5000)
 
  
 def consumer_message(topic: str, my_collection: str, max_docs: List, logger: Logger):
