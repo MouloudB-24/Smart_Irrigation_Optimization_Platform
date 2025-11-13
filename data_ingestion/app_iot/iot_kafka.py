@@ -15,12 +15,14 @@
 #######################################################################
 
 from datetime import datetime
+from logging import Logger
 import os
 
 from conf.config import BASE_DIR
 from data_ingestion.app_iot.iot_simulator import simulate_iot
+from utils.db_utils import create_mongo_connection
 from utils.json_utils import pp_json, read_input_data
-from utils.kafka_utils import produce_message
+from utils.kafka_utils import consumer_message, produce_message
 
 
 def produce_iot(params, logger):
@@ -53,9 +55,22 @@ def produce_iot(params, logger):
     
             # send event to topic
             produce_message(params["IoT_TOPIC"], message, logger)
-                
-    logger.info(f"src.kafka_producer.produce_iot - IoT data is send to topic: {params["IoT_TOPIC"]}")
 
+      
+def consumer_iot(params: dict, logger: Logger):
+    
+    """summary"""
+    
+    # MongoDB persistence
+    mongodb_collection = create_mongo_connection(params, logger)
+
+    if mongodb_collection == -1:
+        logger.critical(f"simulate.generate_iot_events - EXITING")
+        os._exit(1)
+    
+    # Loading data into Mongodb
+    consumer_message(params["IoT_TOPIC"], mongodb_collection, params["MAX_DOCS"], logger)
+    
     
     
     
