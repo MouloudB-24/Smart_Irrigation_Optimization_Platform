@@ -27,7 +27,7 @@ def produce_st_ndvi(params: dict, logger: Logger):
     
     logger.info("produce_st_mdvi - kfka process: NDVI")
     
-    message = get_st_ndvi(params["BBOX_COORDS"], params["TIME_INTERVAL"], logger)
+    message = get_st_ndvi(params["BBOX_COORDS"], logger)
     if message == -1:
         os._exit(1)
     

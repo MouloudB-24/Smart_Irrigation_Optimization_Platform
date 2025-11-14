@@ -13,8 +13,8 @@
         "start_time": "00:00",
         "end_time": "23:59",
         "sensors": [
-          {"sensorId": 21, "min_range": 10, "max_range": 40, "unit": "%", "sensorType": "soil_moisture", "sd": 5, "mean": 25},
-          {"sensorId": 22, "min_range": 10, "max_range": 18, "unit": "°C", "sensorType": "soil_temperature", "sd": 2, "mean":12},
+          {"sensorId": 21, "min_range": 50, "max_range": 95, "unit": "%", "sensorType": "soil_moisture", "sd": 20, "mean": 70},
+          {"sensorId": 22, "min_range": 0, "max_range": 25, "unit": "°C", "sensorType": "soil_temperature", "sd": 2, "mean":12},
           {"sensorId": 23, "min_range": 3, "max_range": 10, "unit": "pH", "sensorType": "soil_ph", "sd": 0.2, "mean": 6}
         ]
       },

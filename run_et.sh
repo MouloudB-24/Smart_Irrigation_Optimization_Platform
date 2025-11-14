@@ -12,8 +12,8 @@ export MONGO_COLLECTION="evapotranspiration_data"
 
 # API 
 export BBOX_COORDS="1.240,48.320,-1.150,48.380"
-export START_DATE="2025-06-01"
-export END_DATE="2025-06-05"
+# export START_DATE="2025-06-01"
+# export END_DATE="2025-06-05"
 
 #  Topic
 export ET_TOPIC="evapotrans_topic"

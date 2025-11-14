@@ -1,7 +1,10 @@
+from datetime import datetime
 from logging import Logger
 import os
 import requests
 from dotenv import load_dotenv
+
+from utils.json_utils import valid_and_pp_response
 
 # Load variable environment
 load_dotenv
@@ -24,9 +27,16 @@ def get_weather_data(logger: Logger):
         response.raise_for_status()
         
         weather_data = response.json()
-        logger.info("get_weather_data - WEATHER API - weather data were obtained")
         
-        return  weather_data
+        logger.info("get_weather_data - WEATHER API - weather data were obtained")
+        valid_and_pp_response(weather_data, logger)
+        
+        return  {
+            "timestamp": datetime.now().isoformat(),
+            "location": weather_data["name"],
+            "main": weather_data["main"],
+            "wind": weather_data["wind"]
+        }
     
     except requests.exceptions.Timeout:
         logger.critical("get_weather_data - Timeout: the server took too long to respond")

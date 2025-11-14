@@ -12,7 +12,7 @@ export MONGO_COLLECTION="ndvi_data"
 
 # API 
 export BBOX_COORDS=-"1.240,48.320,-1.150,48.380"
-export TIME_INTERVAL="2025-06-01,2025-06-10"
+# export TIME_INTERVAL="2025-11-01,2025-11-05"
 
 #  Topic
 export NDVI_TOPIC="ndvi_topic"

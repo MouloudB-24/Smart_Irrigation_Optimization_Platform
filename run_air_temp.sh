@@ -8,14 +8,14 @@ cd $PROJECT_FOLDER
 source .gps
 
 # Mongodb
-export MONGO_COLLECTION="satellite_soil_temperature"
+export MONGO_COLLECTION="air_temperature"
 
 # API Copernicus
 export LATITUDE=48.350
 export LONGITUDE=-1.195
 
 #  Topic
-export ST_TEMP_TOPIC="st_temp_topic"
+export ST_TEMP_TOPIC="air_temp_topic"
 
 # Max docs
 export MAX_DOCS=1
@@ -24,7 +24,7 @@ export MAX_DOCS=1
 source venv/bin/activate
 
 # run
-python3 -m data_ingestion.app_satellite.nasa_power_api.main_soil_temperature
+python3 -m data_ingestion.app_satellite.nasa_power_api.main_air_temperature
 
 
 

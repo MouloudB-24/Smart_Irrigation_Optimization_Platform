@@ -21,7 +21,7 @@ import os
 from conf.config import BASE_DIR
 from data_ingestion.app_iot.iot_simulator import simulate_iot
 from utils.db_utils import create_mongo_connection
-from utils.json_utils import pp_json, read_input_data
+from utils.json_utils import valid_and_pp_response, read_input_data
 from utils.kafka_utils import consumer_message, produce_message
 
 

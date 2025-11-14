@@ -41,7 +41,6 @@ def config_params():
         "ST_TEMP_TOPIC": prs.get("ST_TEMP_TOPIC"),
         # API NDVI
         "BBOX_COORDS": [float(x) for x in prs.get("BBOX_COORDS", "1.240,48.320,-1.150,48.380").split(",")],
-        "TIME_INTERVAL": tuple(prs.get("TIME_INTERVAL", "2025-06-01,2025-06-01").split(",")),
         "NDVI_TOPIC": prs.get("NDVI_TOPIC"),
         # API Earth Engine
         "START_DATE": prs.get("START_DATE"),

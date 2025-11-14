@@ -18,7 +18,7 @@ import logging
 from pathlib import Path
 
 
-def logger(filepath: Path, console_debug_level: int, file_debug_level: int):
+def logger(filepath: str, console_debug_level: int, file_debug_level: int):
     
     """function allowing to configure the logger"""
         

@@ -8,7 +8,7 @@ from kafka import KafkaConsumer
 from kafka.errors import NoBrokersAvailable
 
 from utils.db_utils import insert_to_mongodb
-from utils.json_utils import pp_json
+from utils.json_utils import valid_and_pp_response
 
 def create_kafka_producer():
     """configure kfka Producer"""
@@ -74,9 +74,7 @@ def consumer_message(topic: str, my_collection: str, max_docs: List, logger: Log
             # break
             if len(my_docs) >= max_docs:
                 logger.info(f"consumer_message - message was consumed from topic: {topic}")
-                
-                logger.debug("consumer_message - messages:")
-                pp_json(my_docs, logger)
+                logger.debug(my_docs)
                 
                 insert_to_mongodb(my_collection, my_docs, logger)
                 consumer.commit()

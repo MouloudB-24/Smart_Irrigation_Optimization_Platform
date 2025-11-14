@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import os
 from typing import List, Tuple
 import numpy as np
@@ -13,12 +14,14 @@ from sentinelhub import (
     CRS,
     MimeType)
 
+from utils.json_utils import valid_and_pp_response
+
 
 # Load variables environment
 load_dotenv()
 
 
-def get_st_ndvi(bbox_coords: List, time_interval: Tuple, logger: Logger, resolution: int=10, show_image: bool=False) -> dict:
+def get_st_ndvi(bbox_coords: List, logger: Logger, resolution: int=10, show_image: bool=False) -> dict:
     """
    summary.
     """
@@ -54,7 +57,13 @@ def get_st_ndvi(bbox_coords: List, time_interval: Tuple, logger: Logger, resolut
         return [ndvi];
         }
         """
-
+        # study period (5 days)
+        end_date = datetime.now().date() - timedelta(days=9)
+        start_date = end_date - timedelta(days=4)
+        start_date_str = (start_date).strftime("%Y-%m-%d")
+        end_date_str =(end_date).strftime("%Y-%m-%d")
+        time_interval=(start_date_str, end_date_str)
+        
         # Sentinel Hub query
         request_ndvi = SentinelHubRequest(
             evalscript=evalscript_ndvi,
@@ -72,6 +81,9 @@ def get_st_ndvi(bbox_coords: List, time_interval: Tuple, logger: Logger, resolut
 
         # retreive data
         ndvi_data = request_ndvi.get_data()[0]
+        valid_and_pp_response(ndvi_data, logger)
+    
+        logger.info(f"get_st_ndvi - ndvi data were obtained")
     
         # separation NDVI / mask
         ndvi_values = ndvi_data if ndvi_data.ndim == 2 else ndvi_data[:, :, 0]
@@ -91,12 +103,12 @@ def get_st_ndvi(bbox_coords: List, time_interval: Tuple, logger: Logger, resolut
             plt.show()
         
         ndvi_dict = {
+            "timestamp": datetime.now().isoformat(),
             "time_interval": time_interval,
             "ndvi_min": float(np.nanmin(ndvi_values)),
             "ndvi_max": float(np.nanmax(ndvi_values)),
             "ndvi_mean": ndvi_mean
         }
-        logger.info(f"get_st_ndvi - ndvi data were obtained")
         
         return ndvi_dict
     

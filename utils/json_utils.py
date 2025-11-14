@@ -15,18 +15,33 @@
 #######################################################################
 
 import json
+from logging import Logger
+import os
 import sys
+from typing import Union
+import numpy as np
 
 
-def pp_json(json_thing, logger, sort=False, indents=4):
+def valid_and_pp_response(response: Union[str, np.ndarray, any], logger: Logger, indents=4) -> None:
     
     """Console print: display site data only when logging level = debug"""
     
-    if type(json_thing) is str:
-        logger.debug(json.dumps(json.loads(json_thing), sort_keys=sort, indent=indents))
-    
-    else:
-        logger.debug(json.dumps(json_thing, sort_keys=sort, indent=indents))
+    try:
+        logger.debug("data obtained:")
+        
+        if type(response) is str:
+            logger.debug(json.dumps(json.loads(response), indent=indents))
+        
+        elif type(response) is np.ndarray and not np.isnan(response).all():
+            logger.debug(response)
+            
+        else:
+            logger.debug(json.dumps(response, indent=indents))
+            
+    except Exception as e:
+        logger.critical(f"valid_and_pp_response - format of data obtained is invalid: {e}")
+        logger.debug(response)
+        os._exit(1)
 
 
 def read_input_data(filepath, logger):

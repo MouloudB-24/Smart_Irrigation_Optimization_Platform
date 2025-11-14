@@ -18,7 +18,7 @@ from multiprocessing import Process
 from datetime import datetime
 
 from conf.config import BASE_DIR, config_params
-from data_ingestion.app_satellite.nasa_power_api.kafka_soil_temperature import consumer_st_soil_temp, produce_st_soil_temp
+from data_ingestion.app_satellite.nasa_power_api.kafka_air_temperature import consumer_air_temp, produce_air_temp
 from utils.logger import echo_config, logger
 
 
@@ -27,7 +27,7 @@ def main():
     # configure logger
     run_time = datetime.now().strftime("%Y-%m-%d")
     params = config_params()
-    log_file = BASE_DIR / "logs" / f"{params["LOGGING_FILE"]}_Soil_Temp_{run_time}.log"
+    log_file = BASE_DIR / "logs" / run_time / f"{params["LOGGING_FILE"]}_Air-Temp.log"
     logger_ = logger(log_file, params["CONSOLE_DEBUG_LEVEL"], params["FILE_DEBUG_LEVEL"])
     
     logger_.debug(f"Starding run, logfile => {log_file}")
@@ -35,10 +35,10 @@ def main():
     
     try:
         # produce and store a message in a topic
-        p1 = Process(target=produce_st_soil_temp, args=(params, logger_))
+        p1 = Process(target=produce_air_temp, args=(params, logger_))
         
         # consume a message and store it in a mongodb
-        p2 = Process(target=consumer_st_soil_temp, args=(params, logger_))
+        p2 = Process(target=consumer_air_temp, args=(params, logger_))
         
         # Start process
         p1.start()

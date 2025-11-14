@@ -17,34 +17,34 @@
 from logging import Logger
 import os
 
-from data_ingestion.app_satellite.nasa_power_api.soil_temperature import get_soil_temperature
+from data_ingestion.app_satellite.nasa_power_api.air_temperature import get_air_temperature
 from utils.db_utils import create_mongo_connection
 from utils.kafka_utils import consumer_message, produce_message
 
 
 
-def produce_st_soil_temp(params: dict, logger: Logger):
+def produce_air_temp(params: dict, logger: Logger):
     
     """summary"""
         
     # temperature data
-    message = get_soil_temperature(params["LATITUDE"], params["LONGITUDE"], logger)
+    message = get_air_temperature(params["LATITUDE"], params["LONGITUDE"], logger)
     if message == -1:
         os._exit(1)
         
-    logger.debug("produce_st_soil_temp - Soil Temperature kafka process:")
+    logger.debug("produce_air_temp - Soil Temperature kafka process:")
     
     # send message to the topic
     produce_message(params["ST_TEMP_TOPIC"], message, logger)
     
 
-def consumer_st_soil_temp(params: dict, logger: Logger):
+def consumer_air_temp(params: dict, logger: Logger):
     
     # Mongodb persistance
     mongodb_collection = create_mongo_connection(params, logger)
     
     if mongodb_collection == -1:
-        logger.critical("consumer_st_soil_temp - Exiting")
+        logger.critical("consumer_air_temp - Exiting")
         os._exit(1)
         
     # Loading data into Mongodb

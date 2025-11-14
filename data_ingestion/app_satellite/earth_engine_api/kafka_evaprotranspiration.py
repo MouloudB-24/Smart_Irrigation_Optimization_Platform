@@ -25,10 +25,8 @@ from utils.kafka_utils import consumer_message, produce_message
 
 def produce_st_evapotranspiration(params: dict, logger: Logger):
     """summary"""
-    
-    logger.info("produce_st_evapotranspiration - kfka process: EVAPO-TRANSPIRATION")
-    
-    message = get_st_evapotranspiration(params["BBOX_COORDS"], params["START_DATE"], params["END_DATE"], logger)
+        
+    message = get_st_evapotranspiration(params["BBOX_COORDS"], logger)
     if message == -1:
         os._exit(1)
     

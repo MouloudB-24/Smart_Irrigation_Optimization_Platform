@@ -15,7 +15,7 @@ export MONGO_COLLECTION="weather_data"
 export WEATHER_URL="https://api.openweathermap.org/data/2.5/weather"
 
 # Topic
-export WEATHER_TOPIC="Weather_topic"
+export WEATHER_TOPIC="weather_topic"
 
 # Docs
 export MAX_DOCS=1

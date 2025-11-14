@@ -28,7 +28,7 @@ def main():
     
     run_time = datetime.now().strftime("%Y-%m-%d")
     params = config_params()
-    log_file = BASE_DIR / "logs" / f"{params["LOGGING_FILE"]}_IoT_{run_time}.log"
+    log_file = BASE_DIR / "logs" / run_time / f"{params["LOGGING_FILE"]}_IoT.log"
     logger_ = logger(log_file, params["CONSOLE_DEBUG_LEVEL"], params["FILE_DEBUG_LEVEL"])
     
     logger_.info(f"Starding run, logfile => {log_file}")
