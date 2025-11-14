@@ -28,11 +28,11 @@ def config_params():
         "CONSOLE_DEBUG_LEVEL": int(prs["CONSOLE_DEBUG_LEVEL"]),
         "FILE_DEBUG_LEVEL": int(prs["FILE_DEBUG_LEVEL"]),
         "LOGGING_FILE": prs["LOGGING_FILE"],
+        "MAX_DOCS": int(prs.get("MAX_DOCS", 1)),
         # IoT parameters
         "INPUT_DATA_FILE": prs.get("INPUT_DATA_FILE", ""),
         "IoT_TOPIC": prs.get("IoT_TOPIC", ""),
         "SITE_IDS": prs.get("SITE_IDS", 1),
-        "MAX_DOCS": int(prs.get("MAX_DOCS", 12)),
         # API weather parameters
         "WEATHER_TOPIC": prs.get("WEATHER_TOPIC", ""),
         # API NASA

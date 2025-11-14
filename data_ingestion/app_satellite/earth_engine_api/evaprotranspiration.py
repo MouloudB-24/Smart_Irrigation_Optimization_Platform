@@ -46,7 +46,7 @@ def get_st_evapotranspiration(bbox_coords: List, logger: Logger, scale=500):
             "evapostranspiration": {
                 "start_date": start_date_str,
                 "end_date": end_date_str,
-                "ET_mean": et_mean,
+                "ET_mean": et_mean["ET"],
                 "unit": "kg/m2/8days"
             }
         }
