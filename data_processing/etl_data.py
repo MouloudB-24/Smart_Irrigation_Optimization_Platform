@@ -77,33 +77,57 @@ def transform(raw_data: Path, processed_data: Path, logger: Logger) -> pd.DataFr
 
     try:
         df = pd.read_csv(raw_data/"iot_data.csv")
-        sites = pd.DataFrame(df["name"].unique(), columns=["name"])
-        devices = pd.DataFrame(df["deviceType"].unique(), columns=["deviceType"])
-        units = pd.DataFrame(df["unit"].unique(), columns=["unit"])
         
-        def save_to_csv(table, table_name):
-            table.reset_index()
-            table.index.name = "id"
-            table.index += 1
-            table.to_csv(processed_data/f"{table_name}.csv")
-
-        save_to_csv(sites, "site")
-        save_to_csv(devices, "device")
-        save_to_csv(units, "unit")
+        def save_to_csv(table: pd.DataFrame, table_name: str, index_name: str="", include_id: bool=True):
+            if include_id:
+                table.reset_index(drop=True)
+                table.index += 1
+                table.index.name = index_name
+                table.to_csv(processed_data/f"{table_name}.csv", index=True)
+            else:
+                table.to_csv(processed_data/f"{table_name}.csv", index=False)  
+    
+        def search_id(df1, df2, col1, col2):
+            return df1[col1].apply(lambda x: df2[df2[col2] == x].index[0])
         
+        # sites table
+        sites = pd.DataFrame(df["name"].unique(), columns=["site_name"])
+        save_to_csv(sites, "sites", "site_id")
         
-        sitedevice = df[["name", "deviceType"]].drop_duplicates(subset=["name", "deviceType"])
-        # sitedevice["name"] = sitedevice["name"].apply(lambda x: x)
+        # devices table
+        devices = pd.DataFrame(df["deviceType"].unique(), columns=["device_type"])
+        save_to_csv(devices, "devices", "device_id")
         
-        print(sitedevice)
-        print(sites)
+        # sites_devicess table (many to many)
+        sites_devices = df[["name", "deviceType"]].drop_duplicates(subset=["name", "deviceType"])
+        sites_devices["site_id"] = search_id(sites_devices, sites, "name", "site_name")
+        sites_devices["device_type"] = search_id(sites_devices, devices, "deviceType", "device_type")
+        sites_devices = sites_devices[["site_id", "device_type"]]
+        save_to_csv(sites_devices, "sites_devices", include_id=False)
         
-    except Exception:
-        logger.exception("transform - ")
+        # sensors table
+        sensors = pd.DataFrame(df[["sensorType", "unit"]].drop_duplicates(subset=["sensorType", "unit"]))
+        sensors.rename(columns=({"sensorType": "sensor_type", "unit": "sensor_unit"}), inplace=True)
+        save_to_csv(sensors, "sensors", "sensor_id")
+        
+        # devicesensor table (many to many)
+        devices_sensors = df[["deviceType", "sensorType"]].drop_duplicates(subset=["deviceType", "sensorType"])
+        devices_sensors["device_id"] = search_id(devices_sensors,devices,  "deviceType", "device_type")
+        devices_sensors["sensor_id"] = search_id(devices_sensors, sensors, "sensorType", "sensor_type")
+        devices_sensors = devices_sensors[["device_id", "sensor_id"]]
+        save_to_csv(devices_sensors, "devices_sensors", include_id=False)
+        
+        # measure table
+        measures = df
+        measures["site_id"] = measures["name"].apply(lambda x: sites[sites["site_name"] == x].index[0])
+        measures["device_id"] = search_id(measures, devices, "deviceType", "device_type")
+        measures["sensor_id"] = search_id(measures, sensors, "sensorType", "sensor_type")
+        measures = measures[["timestamp", "site_id", "device_id", "sensor_id", "measure"]]
+        save_to_csv(measures, "measures", "measure_id")
+        
+    except Exception as e:
+        logger.exception(f"transform - unexpected error: {e}")
         os._exit(1)
-    
-    
-    
 
 if __name__ == "__main__":
     params = {}
@@ -116,7 +140,6 @@ if __name__ == "__main__":
 
     df = extract(raw_data, logger_)
     
-    print(df)
 
     load_to_csv(df, raw_data, logger_)
     
