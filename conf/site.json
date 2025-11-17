@@ -19,7 +19,7 @@
         ]
       },
       {
-        "deviceId": 1,
+        "deviceId": 2,
         "deviceType": "Pompe_Irrigation",
         "stabilityFactor": 99,
         "start_time": "06:00",
