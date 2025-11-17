@@ -45,17 +45,13 @@ def simulate_iot(site_name: str, device: dict, sensor: dict, current_time: datet
     
     """function fot generating random IoT data"""
     
-    
-    # Generate the timestamp
-    timestamp = current_time.isoformat()
-    
     # Generate the sonsor measure
     measure = generate_value(sensor)
     
     message = {
-        "timestamp": timestamp,
+        "timestamp": current_time.isoformat(),
         "metadata": {
-            "siteId": site_name,
+            "name": site_name,
             "deviceType": device["deviceType"],
             "sensorType": sensor["sensorType"],
             "unit": sensor["unit"]

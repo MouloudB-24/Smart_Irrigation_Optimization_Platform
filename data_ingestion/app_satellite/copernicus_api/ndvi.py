@@ -58,7 +58,7 @@ def get_st_ndvi(bbox_coords: List, logger: Logger, resolution: int=10, show_imag
         }
         """
         # study period (5 days)
-        end_date = datetime.now().date() - timedelta(days=9)
+        end_date = datetime.now().date() - timedelta(days=30)
         start_date = end_date - timedelta(days=4)
         start_date_str = (start_date).strftime("%Y-%m-%d")
         end_date_str =(end_date).strftime("%Y-%m-%d")

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import traceback
 import ee
 from typing import List
 from logging import Logger
@@ -22,7 +23,7 @@ def get_st_evapotranspiration(bbox_coords: List, logger: Logger, scale=500):
         region = ee.Geometry.Rectangle(bbox_coords)
 
         # study period (8 days)
-        end_date = datetime.now().date() - timedelta(days=13)
+        end_date = datetime.now().date() - timedelta(days=21)
         start_date = end_date - timedelta(days=8)
         start_date_str = (start_date).strftime("%Y-%m-%d")
         end_date_str =(end_date).strftime("%Y-%m-%d")
@@ -51,8 +52,8 @@ def get_st_evapotranspiration(bbox_coords: List, logger: Logger, scale=500):
             }
         }
     
-    except Exception as e:
-        logger.error(f"get_st_evapotranspiration - unexpected error: {e}")
+    except Exception:
+        logger.exception("get_st_evapotranspiration - unexpected error:")
         return -1
 
 
