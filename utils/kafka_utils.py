@@ -1,4 +1,5 @@
 
+from datetime import datetime
 import json
 from logging import Logger
 import os
@@ -8,7 +9,7 @@ from kafka import KafkaConsumer
 from kafka.errors import NoBrokersAvailable
 
 from utils.db_utils import insert_to_mongodb
-from utils.json_utils import valid_and_pp_response
+
 
 def create_kafka_producer():
     """configure kfka Producer"""
@@ -52,7 +53,7 @@ def create_kafka_consumer(topic: str):
         auto_offset_reset="earliest",
         group_id="iot_consumer_group",
         enable_auto_commit=False,
-        consumer_timeout_ms=5000)
+        consumer_timeout_ms=10000)
 
  
 def consumer_message(topic: str, my_collection: str, max_docs: List, logger: Logger):
@@ -67,6 +68,9 @@ def consumer_message(topic: str, my_collection: str, max_docs: List, logger: Log
             
             # Extract information from kafka
             message = json.loads(msg.value.decode("utf-8"))
+            
+            # convet date str -> objet
+            message["timestamp"] = datetime.fromisoformat(message["timestamp"])
             
             # Add message to events
             my_docs.append(message)

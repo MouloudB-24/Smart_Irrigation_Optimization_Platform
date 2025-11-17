@@ -19,10 +19,14 @@
 #
 #######################################################################
 
+from logging import Logger
+from typing import List
 import pymongo
+from sqlalchemy import create_engine, text
+from sqlalchemy.exc import SQLAlchemyError
 
 
-def create_mongo_connection(params, logger):
+def create_mongo_connection(params: dict, logger: Logger) -> pymongo.collection:
     
     """Connect to the MongoDB database 'IoTSensor_db' """
     
@@ -54,7 +58,7 @@ def create_mongo_connection(params, logger):
         return -1 
         
 
-def insert_to_mongodb(my_collection, events, logger):
+def insert_to_mongodb(my_collection: pymongo.collection, events: List, logger: Logger):
     
     """Insert one or many document into the MongoDB collection"""
     
@@ -65,4 +69,22 @@ def insert_to_mongodb(my_collection, events, logger):
         logger.error(f"connection.insertOne - insert_many - FAILED: {e} ")
         return -1
 
+
+def create_postgre_connection(params: dict, logger: Logger):
+    """summary"""
+    
+    try:
+        engine = create_engine(
+            f'postgresql+psycopg2://{params["POSTGRE_USER"]}:{params["POSTGRE_PASSWORD"]}'
+            f'@localhost:5432/{params["POSTGRE_DATABASE"]}'
+            )
+        
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+            
+        return engine
+    
+    except SQLAlchemyError as e:
+        logger.critical(f"create_postgresql_connection - connection postgreSQL error:")
+        return -1
     
